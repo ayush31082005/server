@@ -6,12 +6,28 @@ const connectDB = require('./config/Database');
 
 const PORT = process.env.PORT || 5000;
 
+<<<<<<< HEAD
 connectDB();
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     startCronJobs();
 });
+=======
+(async () => {
+    try {
+        await connectDB();
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+            startCronJobs();
+        });
+    } catch (err) {
+        // connectDB already prints a helpful message
+        process.exit(1);
+    }
+})();
+>>>>>>> 093b684 (initial server commit)
 
 // ── Daily Cron Jobs ───────────────────────────────────────────────────────────
 function startCronJobs() {

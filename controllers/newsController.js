@@ -106,3 +106,71 @@ exports.deleteNews = async (req, res, next) => {
         });
     }
 };
+<<<<<<< HEAD
+=======
+// @desc    Update news
+// @route   PUT /api/news/:id
+// @access  Admin
+exports.updateNews = async (req, res, next) => {
+    try {
+        console.log("--- DEBUG NEWS UPDATE ---");
+        console.log("Edit ID:", req.params.id);
+        console.log("Request Body:", req.body);
+        console.log("Uploaded File:", req.file ? req.file.filename : "NONE");
+
+        let news = await News.findById(req.params.id);
+
+        if (!news) {
+            return res.status(404).json({
+                success: false,
+                message: "News not found"
+            });
+        }
+
+        // Update fields
+        const oldTitle = news.title;
+        news.title = req.body.title || news.title;
+        news.content = req.body.content || news.content;
+        news.category = req.body.category || news.category;
+        news.readTime = req.body.readTime || news.readTime;
+        news.author = req.body.author || news.author;
+        news.authorAvatar = req.body.authorAvatar || news.authorAvatar;
+
+        // Update slug if title changed
+        if (req.body.title && req.body.title !== oldTitle) {
+            news.slug = req.body.title.toLowerCase().split(' ').join('-');
+        }
+
+
+        if (req.file) {
+            news.image = `/uploads/${req.file.filename}`;
+        }
+
+        await news.save();
+        console.log("News updated successfully:", news._id);
+
+        res.status(200).json({
+            success: true,
+            data: news
+        });
+    } catch (error) {
+        console.error("CRITICAL ERROR IN UPDATENEWS:");
+        console.error(error);
+
+        // Handle MongoDB Duplicate Key Error (likely slug)
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: "A news article with this title already exists. Please use a unique title."
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: error.message || "An internal server error occurred"
+        });
+    }
+};
+
+
+>>>>>>> 093b684 (initial server commit)

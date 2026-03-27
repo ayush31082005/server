@@ -1,9 +1,24 @@
 const mongoose = require('mongoose');
+<<<<<<< HEAD
 const MONGO_URI = 'mongodb+srv://sanyuktparivar3_db_user:qQrOWLx4NO3a9b83@cluster0.bhprzwx.mongodb.net/sanyukt_db?retryWrites=true&w=majority&appName=Cluster0';
 
 async function check() {
     try {
         await mongoose.connect(MONGO_URI);
+=======
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI;
+
+async function check() {
+    try {
+        if (!MONGO_URI) {
+            throw new Error('Missing MONGO_URI (or MONGODB_URI) in environment variables.');
+        }
+
+        await mongoose.connect(MONGO_URI, { family: 4, serverSelectionTimeoutMS: 5000 });
+>>>>>>> 093b684 (initial server commit)
         console.log('Connected to DB');
 
         const User = mongoose.model('User', new mongoose.Schema({}, { strict: false }));
